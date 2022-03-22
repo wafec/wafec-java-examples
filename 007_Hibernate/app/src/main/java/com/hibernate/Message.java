@@ -5,18 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Date;
-
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
-public class Event {
+public class Message {
     private long id;
-    private String title;
-    private Date date;
+    private String text;
+    private Event event;
 
-    public Event(Date date, String title) {
-        this.date = date;
-        this.title = title;
+    public Message(String text, Event event) {
+        this.text = text;
+        this.event = event;
     }
 }

@@ -9,5 +9,15 @@ public class App {
     public static void main(String[] args) {
         EventService eventService = new EventServiceImpl();
         eventService.registerEvent(new Date(), "test_event");
+        Event lastEvent = null;
+        for (Event event : eventService.retrieveAllEvents()) {
+            System.out.println(event.toString());
+            lastEvent = event;
+        }
+        MessageService messageService = new MessageServiceImpl();
+        messageService.registerMessage("test_message", lastEvent);
+        for (Message message : messageService.retrieveAllMessages()) {
+            System.out.println(message.toString());
+        }
     }
 }

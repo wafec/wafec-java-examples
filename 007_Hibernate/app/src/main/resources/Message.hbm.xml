@@ -1,0 +1,11 @@
+<hibernate-mapping package="com.hibernate">
+    <class name="Message">
+        <id name="id" column="MESSAGE_ID">
+            <generator class="increment" />
+        </id>
+
+        <property name="text" />
+
+        <many-to-one name="event" column="event_id" class="com.hibernate.Event" />
+    </class>
+</hibernate-mapping>

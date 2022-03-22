@@ -5,32 +5,30 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class EventServiceImpl implements  EventService {
     @Override
-    public void registerEvent(Date date, String title) {
-        SessionFactory sessionFactory = getSessionFactory();
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(new Event(date, title));
-        session.getTransaction().commit();
-        session.close();
+    public void registerEvent(final Date date, final String title) {
+        DatabaseUtils.executeQueryOnTransaction((session) -> {
+            session.save(new Event(date, title));
+        });
     }
 
-    private SessionFactory getSessionFactory() {
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure()
-                .build();
-        try {
-            SessionFactory sessionFactory = new MetadataSources(registry)
-                    .buildMetadata().buildSessionFactory();
-            return sessionFactory;
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            StandardServiceRegistryBuilder.destroy(registry);
-            return null;
-        }
+    @Override
+    public List<Event> retrieveAllEvents() {
+        final List<Event> result = new ArrayList<>();
+        DatabaseUtils.executeQueryOnTransaction((session -> {
+            Query query = session.createQuery("FROM Event");
+            result.addAll(query.list());
+        }));
+        return result;
     }
+
+
 }
