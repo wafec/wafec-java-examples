@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  service-a:
+    build:
+      context: ./serviceA
+      dockerfile: ./../Dockerfile-alternate
+      args:
+        - SERVICE_FOLDER=serviceA
+        - STARTUP_CLASS=com.serviceA.App
+    entrypoint: [ "java", "-cp", "*", "com.serviceA.App"]
+    networks:
+      default:
+        aliases:
+          - servicea
+    ports:
+      - 8080:8080
+  service-b:
+    build:
+      context: ./serviceB
+      dockerfile: ./../Dockerfile-alternate
+      args:
+        - SERVICE_FOLDER=serviceB
+        - STARTUP_CLASS=com.serviceB.App
+    entrypoint: [ "java", "-cp", "*", "com.serviceB.App" ]
+    networks:
+      - default
+    ports:
+      - 8081:8081
+    depends_on:
+      - service-a
+
+networks:
+  default:
